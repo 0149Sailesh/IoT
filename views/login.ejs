@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<link rel="stylesheet" href="login.css" type="text/css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+</head>
+<body>
+<div class="ui inverted menu" style="position:absolute;">
+  <a class="item" href="/">
+	Login
+  </a>
+  <a class="item" href="/register">
+    Sign Up
+  </a>
+</div>
+<canvas></canvas>
+<div class="login-box" style="position:absolute;">
+  <h1>Login</h1>
+	<form action="/login" method="POST">
+		
+		 <div class="textbox">
+    <i class="fas fa-user"></i>
+    <input type="text" placeholder="Username" name="username">
+  </div>
+
+  <div class="textbox">
+    <i class="fas fa-lock"></i>
+    <input type="password" placeholder="Password" name="password">
+  </div>
+
+  <button class="btn">
+	  Sign In
+		</button>
+
+	</form>
+	
+	  </div>
+<script src="starfall.js" type="text/javascript"></script>
+</body>
+</html>

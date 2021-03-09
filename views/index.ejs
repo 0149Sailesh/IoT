@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Temperature Plot</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    </head>
+    <body>
+        <!--navbar starts-->
+        <nav class="navbar navbar-dark bg-dark">
+            <a class="navbar-brand" href="/events">Events</a>
+          </nav>
+            <!-- Navbar content -->
+            <audio id="myAudio">
+                <source src="https://media.geeksforgeeks.org/wp-content/uploads/20190531135120/beep.mp3" type="audio/mpeg">
+                Your browser does not support the audio element.
+              </audio>
+
+          <br>
+        <h1>Water Flow Graph</h1>
+        <h4>Date: <span id="date"></span></h4>
+        <div class="chart-container" style="position: relative; width:75vw; margin: auto;">
+            <canvas id="myChart"></canvas>
+        </div>
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+<script>
+            var socket = io.connect('http://localhost:4000'); //connect to server
+            var body=document.getElementsByTagName("body");
+            var audio = document.getElementById('myAudio');
+            var ctx = document.getElementById('myChart').getContext('2d');
+            var chart = new Chart(ctx, {
+                // The type of chart we want to create
+                type: 'line',
+
+                // The data for our dataset
+                data: {
+                labels: [],
+                datasets: [{
+                    label: "Water Flow",
+                    borderColor: "#FF5733",
+                    data: [],
+                    fill: false,
+                    pointStyle: 'circle',
+                    backgroundColor: '#3498DB',
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                    lineTension: 0,
+                }]
+                },
+
+                // Configuration options go here
+                options: {}
+                
+            });
+
+            socket.on('temp', function(data) { //As a temp data is received 
+                
+                document.getElementById('date').innerHTML = data.date; //update the date
+
+                //Background color
+                if(data.level>=25){
+                    body[0].classList.toggle("red");
+                    audio.play();
+                }
+                else{
+                    body[0].backgroundColor="white";
+                    audio.pause();
+                }
+                if(chart.data.labels.length != 15) { //If we have less than 15 data points in the graph
+                    chart.data.labels.push(data.time);  //Add time in x-asix
+                    chart.data.datasets.forEach((dataset) => {
+                        dataset.data.push(data.temp); //Add temp in y-axis
+                    });
+                }
+                else { //If there are already 15 data points in the graph.
+                    chart.data.labels.shift(); //Remove first time data
+                    chart.data.labels.push(data.time); //Insert latest time data
+                    chart.data.datasets.forEach((dataset) => {
+                        dataset.data.shift(); //Remove first temp data
+                        dataset.data.push(data.temp); //Insert latest temp data
+                    });
+                }
+                chart.update(); //Update the graph.
+            });
+        </script>
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    </body>
+    <style>
+        h1 {
+            text-align: center;
+            font-family: 'Lato', sans-serif;
+        }
+
+        h4 {
+            text-align: center;
+            font-family: 'Lato', sans-serif;
+        }
+
+        p {
+            text-align: center;
+            font-family: 'Lato', sans-serif;
+        }
+        .red{
+            background-color: red;
+        }
+    </style>
+</html>
