@@ -4,9 +4,9 @@ void setup() {
 }
 
 void loop() {
-  int value = analogRead(A0); //Read the value from temperature sensor
+  int value = analogRead(A0); 
   int tempC = value*0.48828125;
-  int a=50;//Convert it into temp in C.
+  int a=50;
   String reading;
   reading+=tempC;
   reading+=" ";
